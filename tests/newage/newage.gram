@@ -1,1 +1,130 @@
-/home/jcll/JCLL/dev/EDA-ESL/newage/doc/newage.gram
+grammar Newage
+
+  root    ::= require
+            | module
+            | actor
+            | system ;
+
+  require ::= 'require' (STR_LIT1 | STR_LIT2) ;
+
+  module  ::= 'module' ID (actor | typedef)* 'end' ;
+
+  actor   ::= 'actor' ID decl* (body | fsm_body | ir_body) 'end' ;
+
+  decl   ::= include
+            | input
+            | output
+            | var
+            | typedef
+            | func
+            ;
+
+  include ::= 'include' ID ;
+
+  input      ::= 'input'  ID(',' ID)* ':' type ;
+  output     ::= 'output' ID(',' ID)* ':' type ;
+  var        ::= 'var'    ID(',' ID)* ':' type ;
+  typedef    ::= 'type' ID ':' (enumdef | recordef | arraydef | named_type | basic_type) ;
+  named_type ::= ID ;
+  basic_type ::= INT | BOOL | FLOAT | FIX;
+  enumdef    ::= 'enum' '(' ID(',' ID)* ')' ;
+  recordef   ::= 'record' '(' formal_record_item* ')' ;
+  formal_record_item ::= ID ':' type ;
+
+  arraydef   ::= 'array' INT 'of' type ;
+
+  type       ::= ID | INT | BOOL | FLOAT | FIX ;
+
+  func       ::= 'def' ID decl* body 'end' ;
+
+  # ======================== FSM body ===========================
+  fsm_body   ::= state*                ;
+  state      ::= 'state' ID body 'end' ;
+
+  # ======================== IR body ===========================
+  ir_body     ::= basic_block*  ;
+  basic_block ::= LABEL bb_body ;
+  bb_body     ::= bb_stmt*      ;
+  bb_stmt     ::= assign        ;
+  # ======================== statements =========================
+  body       ::= stmt*;
+  stmt       ::= send | receive | assign | return | while | for | repeat | if | puts | parallel ;
+
+  send       ::= 'send' term '=>' ID                    ;
+  receive    ::= 'receive' term '<=' ID                 ;
+  assign     ::=  term '=' expr                         ;
+  return     ::= 'return' expr                          ;
+  while      ::= 'while' expr body 'end'                ;
+  for        ::= 'for' ID 'in' loop_interval body 'end' ;
+  repeat     ::= 'repeat' body 'until' expr             ;
+  if         ::= 'if' expr body elsif* else* 'end'      ;
+  elsif      ::= 'elsif' expr body                      ;
+  else       ::= 'else' body                            ;
+  parallel   ::= 'parallel' body 'end'                  ;
+  puts       ::= 'puts' (STR_LIT1 | STR_LIT2)           ;
+
+  loop_interval ::= INT_LIT '..' INT_LIT                ;
+
+  #=== expressions ====
+  expr          ::= additive (comp_op additive)*            ;
+  comp_op       ::= '==' | '!=' | '>' | '>=' | '<' | '<='   ;
+
+  additive      ::= multitive (additive_op multitive)*    ;
+  additive_op   ::= '+' | '-' |'or'                       ;
+
+  multitive     ::= term (multitive_op term)*             ;
+  multitive_op  ::= '*' | '/' | '%' | '&' | '>>' | '<<'   ;
+
+  #=== term ===
+  term          ::= 'not' expr
+                  | 'valid?' ID
+                  | fcall
+                  | indexed
+                  | pointed
+                  | INT_LIT
+                  | FLOAT_LIT
+                  | STR_LIT1
+                  | STR_LIT2
+                  | 'true'
+                  | 'false'
+                  ;
+
+  fcall           ::= ID '(' fcall_arguments ')'          ;
+  fcall_arguments ::= expr (',' expr)*                    ;
+
+  indexed         ::= ID '[' expr ']'                     ;
+  pointed         ::= ID '.' expr                         ;
+  #======================= SYSTEM ==============================
+  system        ::= 'system' sys_decl* sys_stmt* 'end' ;
+
+  sys_decl      ::= param_decl | instance_decl | input | output ;
+
+  param_decl    ::= 'param' ID '=' INT_LIT ;
+
+  instance_decl ::= 'instance' ID ':' ID   ;
+
+  sys_stmt      ::= for_gen | connect ;
+
+  for_gen       ::= 'for' ID 'in' loop_interval body_for_gen 'end' ;
+
+  body_for_gen  ::= connect* ;
+
+  connect       ::= 'connect' source '=>' sink ;
+
+  source        ::= expr ; # to the contextual analyzer to verify if that makes sense
+  sink          ::= expr ;
+
+  #=================  lexical elements ==========================
+  LABEL      ::= /[a-zA-Z]*\w*\:/ ;
+  INT        ::= /int(\d*)/ ;
+  FIX        ::= /fix\d+\.\d+/ ;
+  BOOL       ::= /bool/ ;
+  FLOAT      ::= /float(\d*)/ ;
+  COMMENT    ::= /#(.*)\n/ ;
+  INT_LIT    ::= /[+-]?(0x[a-fA-F0-9]+|0b[0-1]+ |\d+)?/ ;
+  FLOAT_LIT  ::= /[+-]?\d+'.'\d+([e|E][+-]?\d+)?/ ;
+  STR_LIT1    ::= /".*"/ ;
+  STR_LIT2    ::= /'.*'/ ;
+  ID         ::= /[a-zA-Z]*\w*/ ;
+
+end

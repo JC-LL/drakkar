@@ -25,7 +25,7 @@ module Drakkar
     def parse filename
       puts " |->[+] parsing  grammar"
       begin
-        str=IO.read(filename).downcase
+        str=IO.read(filename)
         @tokens=Lexer.new.tokenize(str)
         @tokens.reject!{|tok| tok.is_a? [:newline]}
         @tokens.reject!{|tok| tok.is_a? [:comment]}
