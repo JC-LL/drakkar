@@ -1,0 +1,7 @@
+# this grammar need a lookahead=2 to disambiguite assign and call.
+
+grammar assign_call_2
+  stmt        ::= assign_call   ;
+  assign_call ::= id ('=' id | '(' id ')' ) ;
+  id          ::= /[a-zA-Z]+/   ;
+end

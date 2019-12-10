@@ -1,0 +1,13 @@
+# first grammar test
+# 2019
+
+grammar bodygram
+  body   ::= if | assign ;
+  if     ::= 'if' cond body elsif* else? 'end' ;
+  assign ::= id '=' expr ;
+  cond   ::= op ;
+  expr   ::= term op term ;
+  op     ::= '==' | '>' | '<' ;
+  term   ::= id ;
+  id     ::= /[a-zA-Z]+/ ;
+end
