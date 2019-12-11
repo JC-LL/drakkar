@@ -86,11 +86,14 @@ module Drakkar
       @errors=0
       starters=rec_starters(rule.definition)
       hash_count=starters.inject(Hash.new(0)) {|h,i| h[i] += 1; h }
-      hash_count.each do |elem,count|
-        if count>1
-          print ERROR_MARK.encode('utf-8').red
-          puts " not LL(1) : #{elem.inspect} reached #{count} times".ljust(100)
-          @errors+=1
+      if hash_count.values.any?{|v| v>1}
+        puts ERROR_MARK.encode('utf-8').red
+        puts " "*13+"Not LL(1) :"
+        hash_count.each do |elem,count|
+          if count>1
+            puts " "*13+"- #{elem.inspect} reached #{count} times".ljust(100)
+            @errors+=1
+          end
         end
       end
       puts CHECK_MARK.encode('utf-8').green unless @errors!=0

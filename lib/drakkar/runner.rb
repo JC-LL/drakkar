@@ -18,7 +18,7 @@ module Drakkar
       if filename=args[:filename]
         compiler.compile filename
       else
-        puts "need an grammar file : drakkar <file.gram>"
+        puts "need a grammar file : drakkar <file.gram>"
       end
     end
 

@@ -1,0 +1,6 @@
+grammar test_1
+  a ::= b | c | d ;
+  b ::= c | d ;
+  c ::= 'T' ;
+  d ::= 'U' ;
+end
