@@ -1,2 +1,17 @@
 grammar Expr
+
+  expr          ::= additive (comp_op additive)*            ;
+  comp_op       ::= '==' | '!=' | '>' | '>=' | '<' | '<='   ;
+
+  additive      ::= multitive (additive_op multitive)*    ;
+  additive_op   ::= '+' | '-' |'or'                       ;
+
+  multitive     ::= term (multitive_op term)*             ;
+  multitive_op  ::= '*' | '/' | '%' | '&' | '>>' | '<<'   ;
+
+  term          ::= ident | int_lit ;
+
+  ident         ::= /[a-z]*/ ;
+  int_lit       ::= /\d+/    ;
+
 end

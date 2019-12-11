@@ -4,6 +4,8 @@ require_relative 'checker'
 module Drakkar
   class Compiler
 
+    attr_accessor :options
+
     def initialize
       header
     end
@@ -16,9 +18,19 @@ module Drakkar
       begin
         puts "[+] compiling #{filename}"
         ast=Parser.new.parse(filename)
+
         Checker.new.check(ast)
+        exiting :check
+
       rescue Exception => e
-        puts e.backtrace
+        #puts e.backtrace
+        abort
+      end
+    end
+
+    def exiting option
+      if $options[option]
+        puts "[+] exit on option '#{option}'"
         abort
       end
     end
