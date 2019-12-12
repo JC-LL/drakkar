@@ -4,6 +4,8 @@
 grammar bodygram
   body   ::= if | assign ;
   if     ::= 'if' cond body elsif* else? 'end' ;
+  elsif  ::= 'elsif' body ;
+  else   ::= 'else'  body ;
   assign ::= id '=' expr ;
   cond   ::= op ;
   expr   ::= term op term ;

@@ -47,6 +47,10 @@ module Drakkar
     def inspect
       tok.val
     end
+    
+    def val
+      tok.val
+    end
   end
 
   class TokDef < AstNode
@@ -56,6 +60,10 @@ module Drakkar
     end
 
     def inspect
+      tok.val
+    end
+
+    def val
       tok.val
     end
   end

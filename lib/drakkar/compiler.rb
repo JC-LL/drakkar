@@ -16,14 +16,15 @@ module Drakkar
 
     def compile filename
       begin
-        puts "[+] compiling #{filename}"
+        puts "[+] analyzing #{filename}"
         ast=Parser.new.parse(filename)
 
         Checker.new.check(ast)
         exiting :check
 
       rescue Exception => e
-        #puts e.backtrace
+        puts e
+        puts e.backtrace
         abort
       end
     end

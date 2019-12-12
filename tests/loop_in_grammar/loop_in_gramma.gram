@@ -1,0 +1,7 @@
+grammar loop_in_grammar
+
+    a ::= b | c ;
+    b ::= a ;
+    c ::= 'END' ;
+
+end
